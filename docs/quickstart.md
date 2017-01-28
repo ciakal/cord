@@ -24,6 +24,7 @@ Target server requirements:
   * 200GB+ disk
 * Access to the Internet
 * Ubuntu 14.04 LTS freshly installed (see [TBF]() for instruction on how to install Ubuntu 14.04).
+  * Run "sudo apt-get dist-upgrade" before beginning the installation (checked for 14.04.5 LTS).
 * User account used to install CORD-in-a-Box has password-less *sudo* capability (e.g., like the `ubuntu` user)
 
 ### Target Server on CloudLab (optional)
@@ -135,13 +136,14 @@ cfd93633bfae        xosproject/xos-synchronizer-vtr                       "bash 
 d2d2a0799ca0        xosproject/xos-synchronizer-vsg                       "bash -c 'sleep 120; "   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpod_xos_synchronizer_vsg_1
 480b5e85e87d        xosproject/xos-synchronizer-onos                      "bash -c 'sleep 120; "   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpod_xos_synchronizer_onos_1
 9686909333c3        xosproject/xos-synchronizer-fabric                    "bash -c 'sleep 120; "   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpod_xos_synchronizer_fabric_1
+a81d5ad55751        xosproject/xos-synchronizer-vrouter                   "bash -c 'sleep 120; "   2 hours ago         Up 2 hours                                                                                                                                  cordpod_xos_synchronizer_vrouter_1
 de53b100ce20        xosproject/xos-synchronizer-openstack                 "bash -c 'sleep 120; "   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpod_xos_synchronizer_openstack_1
 8a250162424c        xosproject/xos-synchronizer-vtn                       "bash -c 'sleep 120; "   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpod_xos_synchronizer_vtn_1
 f1bd21f98a9f        xosproject/xos                                        "python /opt/xos/mana"   2 hours ago         Up 2 hours          0.0.0.0:81->81/tcp, 8000/tcp                                                                     cordpodbs_xos_bootstrap_ui_1
 e41ccc63e7dd        xosproject/xos                                        "bash -c 'cd /opt/xos"   2 hours ago         Up 2 hours          8000/tcp                                                                                         cordpodbs_xos_synchronizer_onboarding_1
 7fdeb35614e8        redis                                                 "docker-entrypoint.sh"   2 hours ago         Up 2 hours          6379/tcp                                                                                         cordpodbs_xos_redis_1
 84fa440023bf        xosproject/xos-postgres                               "/usr/lib/postgresql/"   2 hours ago         Up 2 hours          5432/tcp                                                                                         cordpodbs_xos_db_1
-ef0dd85badf3        onosproject/onos:latest                               "./bin/onos-service"     2 hours ago         Up 2 hours          0.0.0.0:6653->6653/tcp, 0.0.0.0:8101->8101/tcp, 0.0.0.0:8181->8181/tcp, 0.0.0.0:9876->9876/tcp   onosfabric_xos-onos_1
+ef0dd85badf3        docker-registry:5000/opencord/onos:candidate          "./bin/onos-service"     2 hours ago         Up 2 hours          0.0.0.0:2620->2620/tcp, 0.0.0.0:6653->6653/tcp, 0.0.0.0:8101->8101/tcp, 0.0.0.0:8181->8181/tcp, 0.0.0.0:9876->9876/tcp   onosfabric_xos-onos_1
 e2348ddee189        xos/onos                                              "./bin/onos-service"     2 hours ago         Up 2 hours          0.0.0.0:6654->6653/tcp, 0.0.0.0:8102->8101/tcp, 0.0.0.0:8182->8181/tcp, 0.0.0.0:9877->9876/tcp   onoscord_xos-onos_1
 f487db716d8c        docker-registry:5000/mavenrepo:candidate              "nginx -g 'daemon off"   3 hours ago         Up 3 hours          443/tcp, 0.0.0.0:8080->80/tcp                                                                    mavenrepo
 0a24bcc3640a        docker-registry:5000/cord-maas-automation:candidate   "/go/bin/cord-maas-au"   3 hours ago         Up 3 hours                                                                                                           automation
@@ -221,6 +223,7 @@ Virtual machines created via XOS/OpenStack will be instantiated inside the `comp
 VM.  To login to an OpenStack VM, first get the management IP address (172.27.0.x):
 
 ```
+vagrant@prod:~$ source admin-openrc.sh
 vagrant@prod:~$ nova list --all-tenants
 +--------------------------------------+-------------------------+--------+------------+-------------+---------------------------------------------------+
 | ID                                   | Name                    | Status | Task State | Power State | Networks                                          |
@@ -253,8 +256,11 @@ ubuntu@mysite-vsg-1:~$
 ### MaaS GUI
 
 You can access the MaaS (Metal-as-a-Service) GUI by pointing your browser to the URL
-`http://<target-server>:8080/MAAS/`.  Username and password are both `cord`.  For more
+`http://<target-server>:8080/MAAS/`.  Username is 'cord' and you can find the password through the virtual head node 'prod' as follows.  For more
 information on MaaS, see [the MaaS documentation](http://maas.io/docs).
+```
+vagrant@prod:~$ cat /cord/build/maas/passwords/maas_user.txt
+```
 
 ### XOS GUI
 
